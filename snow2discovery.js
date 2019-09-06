@@ -58,6 +58,7 @@ var snow = callServiceNow().then(function (body) {
     console.log(i);
 
     var temp_file_contents;
+    var s_desc = JSON.stringify(knowledges[i].short_description);
 
     /*
     // article_type == 'text'
@@ -80,61 +81,56 @@ var snow = callServiceNow().then(function (body) {
 
     // article_type == 'text'
     if (knowledges[i].article_type == 'text') {
+      var body_content = JSON.stringify(knowledges[i].text);
       temp_file_contents = '{ \
         "number": "' + knowledges[i].number + '", \
         "article_type": "' + knowledges[i].article_type + '", \
         "workflow_state": "' + knowledges[i].workflow_state + '", \
-        "short_description": "' + knowledges[i].short_description + '", \
+        "short_description": ' + s_desc + ', \
         "sys_updated_on": "' + knowledges[i].sys_updated_on + '", \
         "sys_updated_by": "' + knowledges[i].sys_updated_by + '", \
-        "text": "' + knowledges[i].text + '", \
+        "text": ' + body_content + ' , \
         "wiki": "", \
-        "title": "' + knowledges[i].short_description + '", \
-        "body": "' + knowledges[i].text + '", \
+        "title": ' + s_desc + ', \
+        "body": ' + body_content + ', \
         "sourceUrl": "" \
       }';
     }
 
-    article_type == 'wiki'
+    // article_type == 'wiki'
     if (knowledges[i].article_type == 'wiki') {
       temp_file_contents = '{ \
         "number": "' + knowledges[i].number + '", \
         "article_type": "' + knowledges[i].article_type + '", \
         "workflow_state": "' + knowledges[i].workflow_state + '", \
-        "short_description": "' + knowledges[i].short_description + '", \
+        "short_description": ' + s_desc + ', \
         "sys_updated_on": "' + knowledges[i].sys_updated_on + '", \
         "sys_updated_by": "' + knowledges[i].sys_updated_by + '", \
         "text": "", \
         "wiki": "' + knowledges[i].wiki + '", \
-        "title": "' + knowledges[i].short_description + '", \
+        "title": ' + s_desc + ', \
         "body": "", \
         "sourceUrl": "' + knowledges[i].wiki + '" \
       }';
-
-      /*
-      temp_file_contents = '{ \
-        "title": "' + knowledges[i].short_description + '", \
-        "body": "", \
-        "sourceUrl": "' + knowledges[i].wiki + '" \
-      }';
-      */
     }
 
-    console.log(temp_file_contents);
+    //console.log("!!!!!!!!!!!!!!");
+    //console.log(temp_file_contents);
+    //console.log("!!!!!!!!!!!!!!");
     
+    // there should be a better way
     //var one_entry = JSON.stringify(temp_file_contents);
     var one_entry = temp_file_contents;
     tempfile = "tmp/" + knowledges[i].number + ".json";
     fs.writeFileSync(tempfile, one_entry);
     var file = fs.readFileSync(tempfile);
 
-    /*
+    
     discovery.addDocument({ environment_id: process.env.DISCOVERY_ENVIRONMENT_ID, collection_id: process.env.DISCOVERY_COLLECTION_ID, file: file, filename: tempfile},
       function(error, data) {
         console.log(JSON.stringify(data, null, 2));
         }
     );
-    */
     
       
     //console.log(knowledges[i].number);
